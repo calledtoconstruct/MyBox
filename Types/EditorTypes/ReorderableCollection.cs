@@ -20,21 +20,27 @@ namespace MyBox.EditorTools
 			{
 				var headerRect = GUILayoutUtility.GetRect(0, 0, GUILayout.ExpandWidth(true));
 				headerRect.height = 20;
-				_list.DoLayoutList();
 				DrawHeader(headerRect);
+				_list.DoLayoutList();
 			}
 			else DrawHeader(GUILayoutUtility.GetRect(0, 20, GUILayout.ExpandWidth(true)));
 		}
 
 		public void Draw(Rect rect)
 		{
-			if (_property.isExpanded) _list.DoList(rect);
 			DrawHeader(rect);
+			rect.y += EditorGUIUtility.singleLineHeight;
+			rect.y += EditorGUIUtility.standardVerticalSpacing;
+			if (_property.isExpanded) _list.DoList(rect);
 		}
 
 		public float Height
 		{
-			get { return _property.isExpanded ? _list.GetHeight() : EditorGUIUtility.singleLineHeight + 12; }
+			get {
+				return _property.isExpanded
+					? _list.GetHeight() + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing
+					: EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing + 12;
+			}
 		}
 
 		public SerializedProperty Property
@@ -87,12 +93,14 @@ namespace MyBox.EditorTools
 		{
 			var headerRect = new Rect(rect);
 			headerRect.height = EditorGUIUtility.singleLineHeight;
+			headerRect.height += EditorGUIUtility.standardVerticalSpacing;
 			
 			ReorderableList.defaultBehaviours.DrawHeaderBackground(headerRect);
 			
 			headerRect.width -= 50;
 			headerRect.x += 6;
 			headerRect.y += 2;
+			headerRect.y -= EditorGUIUtility.standardVerticalSpacing;
 			_property.isExpanded = EditorGUI.ToggleLeft(headerRect,
 				(_customHeader != null ? _customHeader : _property.displayName) + "[" + _property.arraySize + "]",
 				_property.isExpanded,
