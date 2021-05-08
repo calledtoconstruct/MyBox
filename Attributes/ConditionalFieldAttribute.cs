@@ -15,14 +15,16 @@ namespace MyBox
 		public readonly string FieldToCheck;
 		public readonly string[] CompareValues;
 		public readonly bool Inverse;
+		public readonly bool ClearOtherwise;
 
 		/// <param name="fieldToCheck">String name of field to check value</param>
 		/// <param name="inverse">Inverse check result</param>
 		/// <param name="compareValues">On which values field will be shown in inspector</param>
-		public ConditionalFieldAttribute(string fieldToCheck, bool inverse = false, params object[] compareValues)
+		public ConditionalFieldAttribute(string fieldToCheck, bool inverse = false, bool clearOtherwise = false, params object[] compareValues)
 		{
 			FieldToCheck = fieldToCheck;
 			Inverse = inverse;
+			ClearOtherwise = clearOtherwise;
 			CompareValues = compareValues.Select(c => c.ToString().ToUpper()).ToArray();
 		}
 	}
@@ -59,7 +61,12 @@ namespace MyBox.Internal
 
 			var propertyToCheck = ConditionalFieldUtility.FindRelativeProperty(property, conditional.FieldToCheck);
 			_toShow = ConditionalFieldUtility.PropertyIsVisible(propertyToCheck, conditional.Inverse, conditional.CompareValues);
-			if (!_toShow) return 0;
+			
+			if (!_toShow)
+			{
+				if (conditional.ClearOtherwise) ConditionalFieldUtility.Clear(property);
+				return 0;
+			}
 
 			if (_customAttributeDrawer != null) return _customAttributeDrawer.GetPropertyHeight(property, label);
 			if (_customTypeDrawer != null) return _customTypeDrawer.GetPropertyHeight(property, label);
@@ -225,6 +232,34 @@ namespace MyBox.Internal
 
 	public static class ConditionalFieldUtility
 	{
+		#region Clear Property
+
+		public static void Clear(SerializedProperty property)
+		{
+			switch (property.propertyType)
+			{
+				case SerializedPropertyType.String:
+					property.stringValue = default(string);
+					break;
+				case SerializedPropertyType.ObjectReference:
+					property.objectReferenceValue = default(UnityEngine.Object);
+					break;
+				case SerializedPropertyType.Boolean:
+					property.boolValue = default(bool);
+					break;
+				case SerializedPropertyType.Integer:
+					property.intValue = default(int);
+					break;
+				case SerializedPropertyType.Enum:
+					property.enumValueIndex = 0;
+					break;
+				default:
+					break;
+			}
+		}
+		
+		#endregion
+
 		#region Property Is Visible
 
 		public static bool PropertyIsVisible(SerializedProperty property, bool inverse, string[] compareAgainst)
