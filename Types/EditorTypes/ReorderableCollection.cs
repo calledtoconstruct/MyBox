@@ -189,9 +189,13 @@ namespace MyBox.EditorTools
 		{
 			if (CustomDrawerHeight != null) return CustomDrawerHeight(index);
 
-			var element = _property.GetArrayElementAtIndex(index);
-			var height = EditorGUI.GetPropertyHeight(element, GUIContent.none, true);
-			return Mathf.Max(EditorGUIUtility.singleLineHeight, height + 4.0f);
+			try {
+				var element = _property.GetArrayElementAtIndex(index);
+				var height = EditorGUI.GetPropertyHeight(element, GUIContent.none, true);
+				return Mathf.Max(EditorGUIUtility.singleLineHeight, height + 4.0f);
+			} catch (Exception exception) {
+				return EditorGUIUtility.singleLineHeight;
+			}
 		}
 
 		private void Apply()
