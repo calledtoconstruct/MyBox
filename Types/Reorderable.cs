@@ -76,9 +76,8 @@ namespace MyBox.Internal
 
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 		{
-			if (_reorderable == null)
-				_reorderable = new ReorderableCollection(property.FindPropertyRelative("Collection"), true, true, property.displayName);
-			
+			var collectionProperty = property.FindPropertyRelative("Collection");
+			_reorderable = new ReorderableCollection(collectionProperty, true, true, property.displayName);
 			return _reorderable != null ? _reorderable.Height : base.GetPropertyHeight(property, label);
 		}
 
