@@ -236,6 +236,10 @@ namespace MyBox.Internal
 
 		public static void Clear(SerializedProperty property)
 		{
+			if (property.isArray) {
+				property.arraySize = 0;
+			}
+			
 			switch (property.propertyType)
 			{
 				case SerializedPropertyType.String:
@@ -252,11 +256,6 @@ namespace MyBox.Internal
 					break;
 				case SerializedPropertyType.Enum:
 					property.enumValueIndex = 0;
-					break;
-				case SerializedPropertyType.Generic:
-					if (property.isArray) {
-						property.arraySize = 0;
-					}
 					break;
 				default:
 					break;

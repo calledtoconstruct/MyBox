@@ -1,16 +1,20 @@
 {
-"name": "com.domybest.mybox",
-"version": "1.6.7",
-"displayName": "MyBox",
-"description": "MyBox is a set of attributes, tools and extensions for Unity",
-
-"unity": "2018.3",
-"dependencies": {
-    "com.unity.ugui": "1.0.0"
-},
-
-"keywords": ["attributes", "extensions", "editor tools"],
-"author": { "name" : "Andrew Rumak",
-   "email" : "andrew@deadcow.ru",
-   "url" : "http://andrew@deadcow.ru/" }
+    "name": "com.domybest.mybox",
+    "version": "1.6.8",
+    "displayName": "MyBox",
+    "description": "MyBox is a set of attributes, tools and extensions for Unity",
+    "unity": "2018.3",
+    "dependencies": {
+        "com.unity.ugui": "1.0.0"
+    },
+    "keywords": [
+        "attributes",
+        "extensions",
+        "editor tools"
+    ],
+    "author": {
+        "name": "Andrew Rumak",
+        "email": "andrew@deadcow.ru",
+        "url": "http://andrew@deadcow.ru/"
+    }
 }
