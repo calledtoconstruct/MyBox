@@ -46,26 +46,28 @@ namespace MyBox.Internal
 
 				if (_target == null) _target = new SerializedObject(property.objectReferenceValue);
 				var propertyObject = _target.GetIterator();
-				propertyObject.Next(true);
-				propertyObject.NextVisible(false);
+				if (propertyObject.Next(true)) {
+					if (propertyObject.NextVisible(false)) {
 
-				var xPos = position.x + 10;
-				var width = position.width - 10;
+						var xPos = position.x + 10;
+						var width = position.width - 10;
 
-				bool expandedReorderable = false;
-				while (propertyObject.NextVisible(propertyObject.isExpanded && !expandedReorderable))
-				{
+						bool expandedReorderable = false;
+						while (propertyObject.NextVisible(propertyObject.isExpanded && !expandedReorderable))
+						{
 #if UNITY_2020_2_OR_NEWER
-					expandedReorderable = propertyObject.isExpanded && propertyObject.isArray &&
-					                      !propertyObject.IsAttributeDefined<NonReorderableAttribute>();
+							expandedReorderable = propertyObject.isExpanded && propertyObject.isArray &&
+												!propertyObject.IsAttributeDefined<NonReorderableAttribute>();
 #endif
 
-					position.x = xPos + 10 * propertyObject.depth;
-					position.width = width - 10 * propertyObject.depth;
+							position.x = xPos + 10 * propertyObject.depth;
+							position.width = width - 10 * propertyObject.depth;
 
-					position.height = EditorGUI.GetPropertyHeight(propertyObject, expandedReorderable);
-					EditorGUI.PropertyField(position, propertyObject);
-					position.y += position.height + 4;
+							position.height = EditorGUI.GetPropertyHeight(propertyObject, expandedReorderable);
+							EditorGUI.PropertyField(position, propertyObject);
+							position.y += position.height + 4;
+						}
+					}
 				}
 
 				if (!_buttonMethods.TargetMethods.IsNullOrEmpty())
@@ -102,10 +104,11 @@ namespace MyBox.Internal
 			float height = ((DisplayInspectorAttribute)attribute).DisplayScript ? EditorGUI.GetPropertyHeight(property) + 4 : 0;
 
 			var propertyObject = new SerializedObject(property.objectReferenceValue).GetIterator();
-			propertyObject.Next(true);
-			propertyObject.NextVisible(true);
-
-			while (propertyObject.NextVisible(false)) height += EditorGUI.GetPropertyHeight(propertyObject) + 4;
+			if (propertyObject.Next(true)) {
+				if (propertyObject.NextVisible(true)) {
+					while (propertyObject.NextVisible(false)) height += EditorGUI.GetPropertyHeight(propertyObject) + 4;
+				}
+			}
 
 			if (_buttonMethods.Amount > 0) height += 4 + _buttonMethods.Amount * EditorGUIUtility.singleLineHeight;
 			return height;
