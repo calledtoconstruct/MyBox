@@ -257,6 +257,19 @@ namespace MyBox.Internal
 				case SerializedPropertyType.Enum:
 					property.enumValueIndex = 0;
 					break;
+				case SerializedPropertyType.Color:
+					property.colorValue = default(Color);
+					break;
+				case SerializedPropertyType.Generic:
+					if (property.GetValue() is ReorderableBase reorderableBase) {
+						var type = property.GetValue().GetType();
+						var field = type.GetField("Collection", BindingFlags.Public | BindingFlags.Instance);
+						var value = field.GetValue(property.GetValue());
+						var valueType = value.GetType();
+						var clearMethod = valueType.GetMethod("Clear", BindingFlags.Public | BindingFlags.Instance);
+						clearMethod.Invoke(value, null);
+					}
+					break;
 				default:
 					break;
 			}
