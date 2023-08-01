@@ -253,6 +253,11 @@ namespace MyBox.Internal
 				case SerializedPropertyType.Enum:
 					property.enumValueIndex = 0;
 					break;
+				case SerializedPropertyType.Generic:
+					if (property.isArray) {
+						property.arraySize = 0;
+					}
+					break;
 				default:
 					break;
 			}
